@@ -19,7 +19,7 @@ const (
 	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
-	password = "test"
+	password = "postgres"
 	dbname   = "db-go"
 )
 
@@ -44,7 +44,8 @@ func main() {
 
 	fmt.Println("Successfully connected to database")
 
-	CreateEmployee()
+	// CreateEmployee()
+	GetEmployees()
 }
 
 func CreateEmployee() {
@@ -62,4 +63,31 @@ func CreateEmployee() {
 	}
 
 	fmt.Printf("New Employee Data : %+v\n", employee)
+}
+
+func GetEmployees() {
+	var results = []Employee{}
+
+	sqlStatement := `SELECT * FROM employees`
+
+	rows, err := db.Query(sqlStatement)
+
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var employee = Employee{}
+
+		err = rows.Scan(&employee.ID, &employee.Name, &employee.Email, &employee.Age, &employee.Division)
+
+		if err != nil {
+			panic(err)
+		}
+
+		results = append(results, employee)
+	}
+
+	fmt.Println("Employees :", results)
 }
