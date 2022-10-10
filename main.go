@@ -7,6 +7,14 @@ import (
 	_ "github.com/lib/pq"
 )
 
+type Employee struct {
+	ID       int
+	Name     string
+	Email    string
+	Age      int
+	Division string
+}
+
 const (
 	host     = "localhost"
 	port     = 5432
@@ -35,4 +43,23 @@ func main() {
 	}
 
 	fmt.Println("Successfully connected to database")
+
+	CreateEmployee()
+}
+
+func CreateEmployee() {
+	var employee = Employee{}
+
+	sqlStatement := `
+	INSERT INTO employees (name, email, age, division)
+	VALUES ($1, $2, $3, $4)
+	Returning *`
+
+	err = db.QueryRow(sqlStatement, "Kresna Vespri", "kresna@gmail.com", 21, "IT").Scan(&employee.ID, &employee.Name, &employee.Email, &employee.Age, &employee.Division)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("New Employee Data : %+v\n", employee)
 }
