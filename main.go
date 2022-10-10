@@ -46,7 +46,8 @@ func main() {
 
 	// CreateEmployee()
 	// GetEmployees()
-	UpdateEmployee()
+	// UpdateEmployee()
+	DeleteEmployee()
 }
 
 func CreateEmployee() {
@@ -112,4 +113,22 @@ func UpdateEmployee() {
 	}
 
 	fmt.Println("Updated Data Amount :", count)
+}
+
+func DeleteEmployee() {
+	sqlStatement := `
+	DELETE FROM employees
+	WHERE id = $1;`
+
+	res, err := db.Exec(sqlStatement, 1)
+	if err != nil {
+		panic(err)
+	}
+	count, err := res.RowsAffected()
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Deleted Data Amount :", count)
 }
