@@ -45,7 +45,8 @@ func main() {
 	fmt.Println("Successfully connected to database")
 
 	// CreateEmployee()
-	GetEmployees()
+	// GetEmployees()
+	UpdateEmployee()
 }
 
 func CreateEmployee() {
@@ -90,4 +91,25 @@ func GetEmployees() {
 	}
 
 	fmt.Println("Employees :", results)
+}
+
+func UpdateEmployee() {
+	sqlStatement := `
+	UPDATE employees
+	SET name = $2, email = $3, age = $4, division = $5
+	WHERE id = $1;`
+
+	res, err := db.Exec(sqlStatement, 1, "Kresna VW", "vw@gmail.com", 21, "Software Engineer")
+
+	if err != nil {
+		panic(err)
+	}
+
+	count, err := res.RowsAffected()
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Updated Data Amount :", count)
 }
